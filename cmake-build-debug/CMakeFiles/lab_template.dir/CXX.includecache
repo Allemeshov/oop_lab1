@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/sveta/Documents/BGTU/Programming/Kurs2/Lab1/project/main.cpp
+iostream
+-
+template.h
+/Users/sveta/Documents/BGTU/Programming/Kurs2/Lab1/project/template.h
+
+/Users/sveta/Documents/BGTU/Programming/Kurs2/Lab1/project/template.cpp
+template.h
+/Users/sveta/Documents/BGTU/Programming/Kurs2/Lab1/project/template.h
+
+/Users/sveta/Documents/BGTU/Programming/Kurs2/Lab1/project/template.h
+iostream
+-
+
