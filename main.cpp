@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include "template.h"
+#include "task1/task1.h"
 
 
 int main() {
@@ -16,24 +17,28 @@ int main() {
 
     enterTaskNumber(selectedTask, minTaskNumber, maxTaskNumber);
 
-    switch (selectedTask) {
-        case 1:
-            task1();
+    int res;
+
+    while (true) {
+        switch (selectedTask) {
+            case 1:
+                res = task1();
+                break;
+            case 2:
+//            task2();
+                break;
+            default:
+                break;
+        }
+
+        if (!res) {
+            std::cout << "\n\tПрограмма была завершена пользователем. Выход из приложения..."
+                      << std::endl;
             break;
-        case 2:
-            task2();
-            break;
-        default:
-            break;
+        }
     }
 
     return 0;
-}
-
-
-void task1() {
-    // Something...
-    std::cout << "task 1";
 }
 
 void task2() {

@@ -5,6 +5,8 @@
 #include "template.h"
 
 
+void clearConsole();
+
 void introduce(const std::string &authorsName, int sex) {
     std::cout << "\n\n\tПриветствую!\n\n";
 
@@ -33,7 +35,14 @@ void enterTaskNumber(int &selectedTask, const int &minTaskNumber, const int &max
 
         if (minTaskNumber <= selectedTask && selectedTask <= maxTaskNumber) {
             std::cout << "Номер задания корректный."
+                      << std::endl
+                      << "Загрузка..."
+                      << std::endl;
+            std::this_thread::sleep_for(2.5s);
+
+            std::cout << "Проект загружен!"
                       << std::endl << std::endl << std::endl << std::endl;
+
             break;
         } else {
             std::cout << "Номер задания некоректный! Выберите от " << minTaskNumber << " до " << maxTaskNumber
