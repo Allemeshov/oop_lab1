@@ -14,7 +14,10 @@ c.	Из файла (имя файла вводит пользователь)
 6)	Результат вывести на экран и сохранить в файл (описать функцию сохранения массива в файл с аргументами: массив, количество элементов, имя файла). http://cppstudio.com/post/446/
 7)	Аналогичные действия выполнить средствами STL vector в отдельной программе.
 8)	Результат выполнения задания – 2 программы (динамический массив и STL).
-*/
+
+ 13.	Удалить из массива повторяющиеся элементы.
+
+ */
 
 #include "task1.h"
 
@@ -82,22 +85,33 @@ bool dynamicArrayAppLaunch() {
             break;
         }
         case 1: {
-            array = (int *) fillWithRandomNumbers(array, length);
+            array = fillWithRandomNumbers(array, length);
             break;
         }
         case 2: {
-            fillFromConsole(array, length);
+            array = fillFromConsole(array, length);
             break;
         }
         case 3: {
-            fillFromFile(array, length);
+            array = fillFromFile(array, length);
             break;
         }
         default:
             break;
     }
 
+    if (array == nullptr) {
+        isFinished = false;
+        return isFinished;
+    }
+
+    outputResult(array, length);
+
     sortArray(array, length);
+
+    outputResult(array, length);
+
+    removeRepeated(array, length);
 
     outputResult(array, length);
     saveResultInFile(array, length);
@@ -134,12 +148,11 @@ int chooseArrayFillingType() {
 }
 
 
-void *fillWithRandomNumbers(int array[], int &length) {
+int *fillWithRandomNumbers(int *array, int &length) {
     fillLength(length);
 
     array = new int[length];
 
-    //    TODO
 
     for (int i = 0; i < length; ++i) {
         array[i] = getRandNumber();
@@ -157,7 +170,7 @@ int getRandNumber() {
 }
 
 
-void fillFromConsole(int array[], int &length) {
+int *fillFromConsole(int array[], int &length) {
     int temp;
     do {
         std::cout << "Введите длину массива: ";
@@ -172,17 +185,25 @@ void fillFromConsole(int array[], int &length) {
         std::cout << "element [" << i << "]: ";
         std::cin >> array[i];
     }
+
+    return array;
 }
 
-void fillFromFile(int array[], int &length) {
+int *fillFromFile(int array[], int &length) {
     std::fstream file;
     std::string filePath;
 
+    array = nullptr;
+
+    std::cin.ignore(1, '\n');
     while (true) {
         std::cout << "Введите имя файла: ";
         std::getline(std::cin, filePath);
+//        std::cin.ignore(256, '\n');
 
         file.open(filePath, std::ios_base::in);
+
+        std::cin.ignore(0);
 
         if (file.good()) {
             int iter = 0;
@@ -200,6 +221,7 @@ void fillFromFile(int array[], int &length) {
 
             do {
                 std::cout << "Хотите повторить ввод? [yes / no]: ";
+//                std::cin.ignore(1, '\n');
                 std::getline(std::cin, filePath);
             } while (filePath != "yes" && filePath != "no");
 
@@ -207,6 +229,8 @@ void fillFromFile(int array[], int &length) {
                 break;
         }
     }
+
+    return array;
 }
 
 void fillLength(int &length) {
@@ -226,13 +250,47 @@ void fillLength(int &length) {
 
 
 void sortArray(int array[], const int &length) {
-    for (int i = 0; i < length; ++i) {
-        std::cout << array[i] << std::endl;
+    int glass;
+
+    for (int i = 0; i < length - 1; ++i) {
+        for (int j = 0; j < length - i - 1; ++j) {
+            if (array[j + 1] < array[j]) {
+                glass = array[j + 1];
+                array[j + 1] = array[j];
+                array[j] = glass;
+            }
+        }
     }
 }
 
-void outputResult(const int array[], const int &length) {
+void removeRepeated(int array[], int &length) {
+    if (length == 0 || length == 1)
+        return;
 
+    int temp[length];
+
+    int i;
+    int j = 0;
+    for (i = 0; i < length - 1; ++i) {
+        if (array[i] != array[i + 1]) {
+            temp[j++] = array[i];
+        }
+    }
+
+    temp[j++] = array[length - 1];
+
+    for (i = 0; i < j; ++i) {
+        array[i] = temp[i];
+    }
+
+    length = j;
+}
+
+void outputResult(const int array[], const int &length) {
+    for (int i = 0; i < length; ++i) {
+        std::cout << "array[" << i << "]: " << array[i] << std::endl;
+    }
+    std::cout << std::endl;
 }
 
 void saveResultInFile(const int array[], const int &length) {

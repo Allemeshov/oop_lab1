@@ -22,16 +22,17 @@ bool STLAppLaunch();
 int chooseArrayFillingType();
 
 
-//void fillWithRandomNumbers(int *array, int &length);
-void *fillWithRandomNumbers(int *array, int &length);
+int *fillWithRandomNumbers(int *array, int &length);
+
 void fillLength(int &length);
 
-void fillFromConsole(int array[], int &length);
+int *fillFromConsole(int array[], int &length);
 
-void fillFromFile(int array[], int &length);
+int *fillFromFile(int array[], int &length);
 
 void sortArray(int array[], const int &length);
 
+void removeRepeated(int array[], int &length);
 
 void outputResult(const int array[], const int &length);
 
