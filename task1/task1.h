@@ -30,6 +30,8 @@ int *fillFromConsole(int array[], int &length);
 
 int *fillFromFile(int array[], int &length);
 
+int *rewriteArray(const int *array, int &iter, const int &glass);
+
 void sortArray(int array[], const int &length);
 
 void removeRepeated(int array[], int &length);

@@ -199,7 +199,6 @@ int *fillFromFile(int array[], int &length) {
     while (true) {
         std::cout << "Введите имя файла: ";
         std::getline(std::cin, filePath);
-//        std::cin.ignore(256, '\n');
 
         file.open(filePath, std::ios_base::in);
 
@@ -208,20 +207,31 @@ int *fillFromFile(int array[], int &length) {
         if (file.good()) {
             int iter = 0;
             int glass;
-            while (file >> glass) {
-                delete array;
+            int *temp = nullptr;
 
-                array = new int[iter + 1];
-                array[iter++] = glass;
+            std::string input;
+
+            while (true) {
+                std::getline(file, input);
+
+                //TODO Clarify which file parse should be implemented.
+                if (input.empty())
+                    break;
+//                if (input.empty())
+//                    continue;
+
+                glass = std::stoi(input, 0, 10);
+                array = rewriteArray(array, iter, glass);
             }
 
+
             length = iter;
+            return array;
         } else {
             std::cout << "Не удалось прочитать файл по данному пути: " << filePath << std::endl;
 
             do {
                 std::cout << "Хотите повторить ввод? [yes / no]: ";
-//                std::cin.ignore(1, '\n');
                 std::getline(std::cin, filePath);
             } while (filePath != "yes" && filePath != "no");
 
@@ -230,7 +240,20 @@ int *fillFromFile(int array[], int &length) {
         }
     }
 
+    file.close();
+
     return array;
+}
+
+int *rewriteArray(const int *arr, int &iter, const int &glass) {
+    int *result = new int[iter + 1];
+    for (int i = 0; i < iter; ++i) {
+        result[i] = arr[i];
+    }
+    result[iter++] = glass;
+
+    delete[] arr;
+    return result;
 }
 
 void fillLength(int &length) {
@@ -294,5 +317,51 @@ void outputResult(const int array[], const int &length) {
 }
 
 void saveResultInFile(const int array[], const int &length) {
+    std::fstream file;
+    std::string filePath;
+    bool isFileFound = false;
+    bool fileWasCreated = false;
 
+    std::cin.ignore(1, '\n');
+    while (true) {
+        std::cout << "Введите имя нового файла: ";
+        std::getline(std::cin, filePath);
+
+        file.open(filePath);
+
+        isFileFound = file.good();
+
+        if (!isFileFound) {
+            file.open(filePath, std::ios_base::out);
+            isFileFound = file.good();
+            fileWasCreated = true;
+        } else {
+            file.open(filePath, std::ios_base::out | std::ios_base::trunc);
+        }
+
+        std::cin.ignore(0);
+
+        if (isFileFound) {
+            for (int i = 0; i < length; ++i) {
+                file << array[i] << std::endl;
+            }
+            std::string status = fileWasCreated ? "сохранён" : "обновлён";
+            std::cout << "\n\n\tФайл был успешно " << status
+                      << " в файл по пути: "
+                      << filePath << std::endl;
+            break;
+        } else {
+            std::cout << "Не удалось создать новый файл по данному пути: "
+                      << filePath << std::endl;
+            do {
+                std::cout << "Хотите повторить ввод? [yes / no]: ";
+                std::getline(std::cin, filePath);
+            } while (filePath != "yes" && filePath != "no");
+
+            if (filePath == "no")
+                break;
+        }
+    }
+
+    file.close();
 }
