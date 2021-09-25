@@ -5,6 +5,7 @@
 #include <iostream>
 #include "template.h"
 #include "task1/task1.h"
+#include "task2/task2.h"
 
 
 int main() {
@@ -25,7 +26,7 @@ int main() {
                 res = task1();
                 break;
             case 2:
-//            task2();
+                task2();
                 break;
             default:
                 break;
@@ -41,8 +42,4 @@ int main() {
     return 0;
 }
 
-void task2() {
-    // Something...
-    std::cout << "task 2";
-}
 
