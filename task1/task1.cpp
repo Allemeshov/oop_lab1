@@ -81,7 +81,6 @@ bool dynamicArrayAppLaunch() {
 
     switch (fillingType) {
         case 0: {
-            isFinished = true;
             break;
         }
         case 1: {
@@ -120,7 +119,52 @@ bool dynamicArrayAppLaunch() {
 }
 
 bool STLAppLaunch() {
+    bool isFinished = false;
+    int fillingType = chooseArrayFillingType();
 
+    int length = 0;
+//    int *array = nullptr;
+    std::vector<int> array;
+
+    switch (fillingType) {
+        case 0: {
+            isFinished = true;
+            break;
+        }
+        case 1: {
+            fillWithRandomNumbersSTL(array, length);
+            break;
+        }
+        case 2: {
+            fillFromConsoleSTL(array, length);
+            break;
+        }
+        case 3: {
+            fillFromFileSTL(array, length);
+            break;
+        }
+        default:
+            isFinished = true;
+            break;
+    }
+
+    if (length == 0) {
+        isFinished = false;
+        return isFinished;
+    }
+
+    outputResultSTL(array, length);
+
+    sortArraySTL(array, length);
+
+    outputResultSTL(array, length);
+
+    removeRepeatedSTL(array, length);
+
+    outputResultSTL(array, length);
+    saveResultInFileSTL(array, length);
+
+    return isFinished;
 }
 
 
@@ -161,6 +205,18 @@ int *fillWithRandomNumbers(int *array, int &length) {
     return array;
 }
 
+void fillWithRandomNumbersSTL(std::vector<int> &array, int &length) {
+    fillLength(length);
+
+
+    for (int i = 0; i < length; ++i) {
+//        array[i] = getRandNumber();
+        array.push_back(getRandNumber());
+    }
+
+//    return array;
+}
+
 int getRandNumber() {
     std::random_device rd;
     std::mt19937 mt(rd());
@@ -189,6 +245,27 @@ int *fillFromConsole(int array[], int &length) {
     return array;
 }
 
+void fillFromConsoleSTL(std::vector<int> &array, int &length) {
+    int temp;
+    do {
+        std::cout << "Введите длину массива: ";
+        std::cin >> temp;
+    } while (temp <= 0);
+
+    length = temp;
+
+//    array = new int[length];
+
+    for (int i = 0; i < length; ++i) {
+        std::cout << "element [" << i << "]: ";
+        std::cin >> temp;
+        array.push_back(temp);
+    }
+
+//    return array;
+}
+
+
 int *fillFromFile(int array[], int &length) {
     std::fstream file;
     std::string filePath;
@@ -207,7 +284,6 @@ int *fillFromFile(int array[], int &length) {
         if (file.good()) {
             int iter = 0;
             int glass;
-            int *temp = nullptr;
 
             std::string input;
 
@@ -220,7 +296,7 @@ int *fillFromFile(int array[], int &length) {
 //                if (input.empty())
 //                    continue;
 
-                glass = std::stoi(input, 0, 10);
+                glass = std::stoi(input, nullptr, 10);
                 array = rewriteArray(array, iter, glass);
             }
 
@@ -243,6 +319,57 @@ int *fillFromFile(int array[], int &length) {
     file.close();
 
     return array;
+}
+
+void fillFromFileSTL(std::vector<int> &array, int &length) {
+    std::fstream file;
+    std::string filePath;
+
+    std::cin.ignore(1, '\n');
+    while (true) {
+        std::cout << "Введите имя файла: ";
+        std::getline(std::cin, filePath);
+
+        file.open(filePath, std::ios_base::in);
+
+        std::cin.ignore(0);
+
+        if (file.good()) {
+            int iter = 0;
+            int glass;
+
+            std::string input;
+
+            while (true) {
+                std::getline(file, input);
+
+                //TODO Clarify which file parse should be implemented.
+                if (input.empty())
+                    break;
+//                if (input.empty())
+//                    continue;
+
+                glass = std::stoi(input, nullptr, 10);
+                array.push_back(glass);
+                iter++;
+            }
+
+
+            length = iter;
+        } else {
+            std::cout << "Не удалось прочитать файл по данному пути: " << filePath << std::endl;
+
+            do {
+                std::cout << "Хотите повторить ввод? [yes / no]: ";
+                std::getline(std::cin, filePath);
+            } while (filePath != "yes" && filePath != "no");
+
+            if (filePath == "no")
+                break;
+        }
+    }
+
+    file.close();
 }
 
 int *rewriteArray(const int *arr, int &iter, const int &glass) {
@@ -286,7 +413,44 @@ void sortArray(int array[], const int &length) {
     }
 }
 
+void sortArraySTL(std::vector<int> &array, const int &length) {
+    int glass;
+
+    for (int i = 0; i < length - 1; ++i) {
+        for (int j = 0; j < length - i - 1; ++j) {
+            if (array[j + 1] < array[j]) {
+                glass = array[j + 1];
+                array[j + 1] = array[j];
+                array[j] = glass;
+            }
+        }
+    }
+}
+
 void removeRepeated(int array[], int &length) {
+    if (length == 0 || length == 1)
+        return;
+
+    int temp[length];
+
+    int i;
+    int j = 0;
+    for (i = 0; i < length - 1; ++i) {
+        if (array[i] != array[i + 1]) {
+            temp[j++] = array[i];
+        }
+    }
+
+    temp[j++] = array[length - 1];
+
+    for (i = 0; i < j; ++i) {
+        array[i] = temp[i];
+    }
+
+    length = j;
+}
+
+void removeRepeatedSTL(std::vector<int> &array, int &length) {
     if (length == 0 || length == 1)
         return;
 
@@ -316,10 +480,67 @@ void outputResult(const int array[], const int &length) {
     std::cout << std::endl;
 }
 
+void outputResultSTL(const std::vector<int> &array, const int &length) {
+    for (int i = 0; i < length; ++i) {
+        std::cout << "array[" << i << "]: " << array[i] << std::endl;
+    }
+    std::cout << std::endl;
+}
+
 void saveResultInFile(const int array[], const int &length) {
     std::fstream file;
     std::string filePath;
-    bool isFileFound = false;
+    bool isFileFound;
+    bool fileWasCreated = false;
+
+    std::cin.ignore(1, '\n');
+    while (true) {
+        std::cout << "Введите имя нового файла: ";
+        std::getline(std::cin, filePath);
+
+        file.open(filePath);
+
+        isFileFound = file.good();
+
+        if (!isFileFound) {
+            file.open(filePath, std::ios_base::out);
+            isFileFound = file.good();
+            fileWasCreated = true;
+        } else {
+            file.open(filePath, std::ios_base::out | std::ios_base::trunc);
+        }
+
+        std::cin.ignore(0);
+
+        if (isFileFound) {
+            for (int i = 0; i < length; ++i) {
+                file << array[i] << std::endl;
+            }
+            std::string status = fileWasCreated ? "сохранён" : "обновлён";
+            std::cout << "\n\n\tФайл был успешно " << status
+                      << " в файл по пути: "
+                      << filePath << std::endl;
+            break;
+        } else {
+            std::cout << "Не удалось создать новый файл по данному пути: "
+                      << filePath << std::endl;
+            do {
+                std::cout << "Хотите повторить ввод? [yes / no]: ";
+                std::getline(std::cin, filePath);
+            } while (filePath != "yes" && filePath != "no");
+
+            if (filePath == "no")
+                break;
+        }
+    }
+
+    file.close();
+}
+
+void saveResultInFileSTL(std::vector<int> array, const int &length) {
+    std::fstream file;
+    std::string filePath;
+    bool isFileFound;
     bool fileWasCreated = false;
 
     std::cin.ignore(1, '\n');
