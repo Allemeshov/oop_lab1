@@ -293,8 +293,6 @@ int *fillFromFile(int array[], int &length) {
                 //TODO Clarify which file parse should be implemented.
                 if (input.empty())
                     break;
-//                if (input.empty())
-//                    continue;
 
                 glass = std::stoi(input, nullptr, 10);
                 array = rewriteArray(array, iter, glass);
@@ -346,8 +344,6 @@ void fillFromFileSTL(std::vector<int> &array, int &length) {
                 //TODO Clarify which file parse should be implemented.
                 if (input.empty())
                     break;
-//                if (input.empty())
-//                    continue;
 
                 glass = std::stoi(input, nullptr, 10);
                 array.push_back(glass);
@@ -356,6 +352,7 @@ void fillFromFileSTL(std::vector<int> &array, int &length) {
 
 
             length = iter;
+            break;
         } else {
             std::cout << "Не удалось прочитать файл по данному пути: " << filePath << std::endl;
 
